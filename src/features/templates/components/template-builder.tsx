@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import styles from '../styles/template-builder.module.css';
 import { SectionCard } from '@/shared/components/section-card';
+import { ToolKicker } from '@/shared/components/tool-kicker';
 import {
   DEFAULT_TEMPLATES,
   extractTemplateVariables,
@@ -184,7 +185,7 @@ export function TemplateBuilder() {
 
   return (
     <div className={`template-builder ${styles.featureRoot}`}>
-      <div className="template-topline"><div className="tool-heading compact-heading"><span className="tool-kicker">TEMPLATE BUILDER</span><h1>Tạo text để copy và gửi</h1><p>Dùng placeholder dạng <code>{'{{ten_bien}}'}</code>; {TEMPLATE_STORAGE_MODE === 'supabase' ? 'template dùng chung qua Supabase.' : 'template lưu riêng trên trình duyệt.'}</p></div><button className="secondary-button new-template-button" type="button" onClick={createTemplate}>+ Tạo template</button></div>
+      <div className="template-topline"><div className="tool-heading compact-heading"><ToolKicker>TEMPLATE BUILDER</ToolKicker><h1>Tạo text để copy và gửi</h1><p>Dùng placeholder dạng <code>{'{{ten_bien}}'}</code>; {TEMPLATE_STORAGE_MODE === 'supabase' ? 'template dùng chung qua Supabase.' : 'template lưu riêng trên trình duyệt.'}</p></div><button className="secondary-button new-template-button" type="button" onClick={createTemplate}>+ Tạo template</button></div>
       <div className="template-library">
         <div className="template-library-heading"><span>Template library</span><small>{templates.length} template</small></div>
         <div className="template-list">

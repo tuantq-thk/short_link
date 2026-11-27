@@ -23,7 +23,6 @@
 .toolHeading { max-width: 720px; margin: 4px auto 0; text-align: center; }
 .toolHeading h1 { margin: 16px 0 10px; font-size: clamp(32px, 4vw, 48px); letter-spacing: -2px; line-height: 1.13; }
 .toolHeading p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
-.toolKicker { color: #776ee7; font-size: 10px; font-weight: 800; letter-spacing: 1.4px; }
 .toolLoading { min-height: 280px; display: grid; place-items: center; color: var(--muted); font-size: 13px; }
 .catalogPage { max-width: 900px; margin: 0 auto; }
 .catalogHero { padding: 35px 0 31px; text-align: center; }
