@@ -19,3 +19,4 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Thêm template storage mode `local`/`supabase`, migration `public.templates` và server CRUD API cho template dùng chung.
 - Tái cấu trúc source theo feature, tách CSS Module cho từng tool và lazy-load Link tools/Templates để giảm initial route bundle.
 - Cố định app shell theo viewport, giữ state các tool đã mở và chỉ scroll/chuyển động trong vùng content khi đổi tab.
+- Template Builder dùng mode `Nhập giá trị` mặc định, thêm mode `Template details`, import JSON và feedback thành công có icon/text cho các action.

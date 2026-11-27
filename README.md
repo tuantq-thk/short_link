@@ -87,7 +87,7 @@ Sau khi tạo, có thể copy toàn bộ report hoặc tải file `teamkit-links
 
 ### Template trả lời
 
-Mở công cụ **Template trả lời**, chọn template Chatwork mặc định hoặc bấm **Tạo mới**. Trong nội dung template, dùng placeholder dạng `{{task}}`, `{{spec}}`, `{{pull_request}}`; các placeholder sẽ tự sinh thành ô nhập giá trị. Sau khi điền, copy phần preview để gửi vào group. Template storage có thể chọn bằng `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE`: `local` lưu definitions trong `localStorage` của trình duyệt hiện tại; `supabase` lưu template dùng chung qua server API. Giá trị nhập cho lần report hiện tại chỉ nằm trong React state và sẽ mất khi reload; không lưu secret hoặc dữ liệu nhạy cảm.
+Mở công cụ **Template trả lời**, chọn template từ dropdown hoặc bấm **Tạo mới**. Có thể import một template hoặc nhiều template bằng file JSON dạng `{ "name": "...", "description": "...", "content": "..." }`, hoặc export template đang chọn thành JSON. Mode **Nhập giá trị** mặc định nằm ở cột trái; chuyển sang **Template details** để sửa nội dung template, còn Preview luôn nằm ở cột phải. Trong nội dung template, dùng placeholder dạng `{{task}}`, `{{spec}}`, `{{pull_request}}`; các placeholder sẽ tự sinh thành ô nhập giá trị. Sau khi điền, bấm **Copy text** để gửi vào group. Template storage có thể chọn bằng `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE`: `local` lưu definitions trong `localStorage` của trình duyệt hiện tại; `supabase` lưu template dùng chung qua server API. Giá trị nhập cho lần report hiện tại chỉ nằm trong React state và sẽ mất khi reload; không lưu secret hoặc dữ liệu nhạy cảm.
 
 ## Deploy miễn phí ban đầu
 

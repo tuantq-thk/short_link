@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react';
 import styles from '../styles/template-builder.module.css';
 import { SectionCard } from '@/shared/components/section-card';
 import { ToolKicker } from '@/shared/components/tool-kicker';
@@ -46,6 +46,8 @@ export function TemplateBuilder() {
   const [notice, setNotice] = useState('');
   const [copied, setCopied] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [activeMode, setActiveMode] = useState<'values' | 'details'>('values');
+  const importInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -126,6 +128,90 @@ export function TemplateBuilder() {
     setValues({});
     setNotice('Đang tạo template mới. Dùng {{ten_bien}} để tạo ô nhập giá trị.');
     setCopied(false);
+    setActiveMode('details');
+  }
+
+  async function importTemplates(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    try {
+      const payload = JSON.parse(await file.text()) as unknown;
+      const candidates = Array.isArray(payload) ? payload : [payload];
+      const imported = candidates.flatMap((item, index): ToolTemplate[] => {
+        if (!item || typeof item !== 'object') return [];
+        const record = item as Record<string, unknown>;
+        const templateName = typeof record.name === 'string' ? record.name.trim() : '';
+        const templateContent = typeof record.content === 'string' ? record.content.trim() : '';
+        if (!templateName || !templateContent) return [];
+        return [
+          {
+            id: `imported-${Date.now()}-${index}`,
+            name: templateName,
+            description: typeof record.description === 'string' ? record.description.trim() : '',
+            content: templateContent,
+          },
+        ];
+      });
+
+      if (!imported.length) throw new Error('File không có template hợp lệ (cần name và content).');
+
+      setSaving(true);
+      if (TEMPLATE_STORAGE_MODE === 'supabase') {
+        const saved: ToolTemplate[] = [];
+        for (const template of imported) {
+          const response = await fetch('/api/templates', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(template),
+          });
+          const result = (await response.json()) as { template?: ToolTemplate; error?: string };
+          if (!response.ok || !result.template)
+            throw new Error(result.error || 'Không import được template.');
+          saved.push(result.template);
+        }
+        setTemplates((current) => [...current, ...saved]);
+        loadTemplate(saved[0]);
+      } else {
+        const nextTemplates = [...templates, ...imported];
+        persistLocal(nextTemplates);
+        loadTemplate(imported[0]);
+      }
+      setNotice(`✓ Đã import ${imported.length} template.`);
+    } catch (error: unknown) {
+      setNotice(error instanceof Error ? error.message : 'Không đọc được file template.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  function exportTemplate() {
+    const exportName = name.trim() || 'teamkit-template';
+    const filename = `${
+      exportName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '') || 'teamkit-template'
+    }.json`;
+    const payload = JSON.stringify(
+      {
+        name: exportName,
+        description: description.trim(),
+        content,
+      },
+      null,
+      2,
+    );
+    const objectUrl = URL.createObjectURL(
+      new Blob([payload], { type: 'application/json;charset=utf-8' }),
+    );
+    const anchor = document.createElement('a');
+    anchor.href = objectUrl;
+    anchor.download = filename;
+    anchor.click();
+    window.setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
+    setNotice('✓ Đã export template JSON.');
   }
 
   async function saveTemplate() {
@@ -158,11 +244,11 @@ export function TemplateBuilder() {
         ];
         setTemplates(nextTemplates);
         setSelectedId(payload.template.id);
-        setNotice('Đã lưu template vào Supabase.');
+        setNotice('✓ Đã lưu template vào Supabase.');
       } else {
         persistLocal([...templates.filter((item) => item.id !== id), nextTemplate]);
         setSelectedId(id);
-        setNotice('Đã lưu template trên trình duyệt này.');
+        setNotice('✓ Đã lưu template trên trình duyệt này.');
       }
     } catch (error: unknown) {
       setNotice(error instanceof Error ? error.message : 'Không lưu được template.');
@@ -189,7 +275,7 @@ export function TemplateBuilder() {
         persistLocal(nextTemplates);
       }
       loadTemplate(nextTemplates[0]);
-      setNotice('Đã xóa template.');
+      setNotice('✓ Đã xóa template.');
     } catch (error: unknown) {
       setNotice(error instanceof Error ? error.message : 'Không xóa được template.');
     } finally {
@@ -201,7 +287,7 @@ export function TemplateBuilder() {
     try {
       await navigator.clipboard.writeText(rendered);
       setCopied(true);
-      setNotice('Đã copy nội dung report.');
+      setNotice('✓ Đã copy nội dung report.');
       window.setTimeout(() => setCopied(false), 1800);
     } catch {
       setNotice('Không copy tự động được. Hãy chọn nội dung trong ô preview để copy.');
@@ -228,143 +314,229 @@ export function TemplateBuilder() {
               : 'template lưu riêng trên trình duyệt.'}
           </p>
         </div>
-        <button
-          className="secondary-button new-template-button"
-          type="button"
-          onClick={createTemplate}
-        >
-          + Tạo template
-        </button>
+        <div className="template-topline-actions">
+          <input
+            ref={importInputRef}
+            className="template-import-input"
+            type="file"
+            accept="application/json,.json"
+            onChange={importTemplates}
+          />
+          <button
+            className="outline-button"
+            type="button"
+            onClick={() => importInputRef.current?.click()}
+            disabled={saving}
+          >
+            <span className="button-icon" aria-hidden="true">
+              ↥
+            </span>
+            Import JSON
+          </button>
+          <button
+            className="outline-button"
+            type="button"
+            onClick={exportTemplate}
+            disabled={saving || !content.trim()}
+          >
+            <span className="button-icon" aria-hidden="true">
+              ↧
+            </span>
+            Export JSON
+          </button>
+          <button
+            className="secondary-button new-template-button"
+            type="button"
+            onClick={createTemplate}
+            disabled={saving}
+          >
+            <span className="button-icon" aria-hidden="true">
+              ＋
+            </span>
+            Tạo template
+          </button>
+        </div>
       </div>
       <div className="template-library">
         <div className="template-library-heading">
-          <span>Template library</span>
+          <label htmlFor="template-select">Template library</label>
           <small>{templates.length} template</small>
         </div>
-        <div className="template-list">
+        <select
+          id="template-select"
+          className="template-select"
+          value={selectedId === 'new' ? '' : selectedId}
+          onChange={(event) => {
+            const template = templates.find((item) => item.id === event.target.value);
+            if (template) loadTemplate(template);
+          }}
+        >
+          {selectedId === 'new' && <option value="">Template mới chưa lưu</option>}
           {templates.map((template) => (
-            <button
-              className={template.id === selectedId ? 'template-item active' : 'template-item'}
-              type="button"
-              key={template.id}
-              onClick={() => loadTemplate(template)}
-            >
-              <strong>{template.name}</strong>
-              <span>{template.description || 'Template cá nhân'}</span>
-            </button>
+            <option value={template.id} key={template.id}>
+              {template.name}
+            </option>
           ))}
-        </div>
+        </select>
+        <p className="template-selected-description">
+          {selected?.description || 'Template cá nhân'}
+        </p>
       </div>
       <div className="template-editor">
-        <div className="template-workbench">
-          <SectionCard
-            className="template-compose"
-            title="Template details"
-            meta={selected?.builtIn ? 'Mặc định' : 'Cá nhân'}
+        {notice && (
+          <p className="template-global-notice" role="status">
+            {notice}
+          </p>
+        )}
+        <div className="template-mode-switch" role="tablist" aria-label="Template workspace mode">
+          <button
+            className={activeMode === 'values' ? 'template-mode active' : 'template-mode'}
+            type="button"
+            role="tab"
+            aria-selected={activeMode === 'values'}
+            onClick={() => setActiveMode('values')}
           >
-            <div className="template-meta">
-              <label htmlFor="template-name">
-                Tên template
-                <input
-                  id="template-name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder="Ví dụ: Release report"
-                />
-              </label>
-              <label htmlFor="template-description">
-                Mô tả
-                <input
-                  id="template-description"
-                  value={description}
-                  onChange={(event) => setDescription(event.target.value)}
-                  placeholder="Template dùng cho..."
-                />
-              </label>
-            </div>
-            <label className="template-content-label" htmlFor="template-content">
-              Nội dung template
-              <textarea
-                id="template-content"
-                className="template-content"
-                value={content}
-                onChange={(event) => updateContent(event.target.value)}
-                placeholder="Viết nội dung và dùng {{placeholder}}..."
-                rows={12}
-              />
-            </label>
-            <div className="template-editor-actions">
-              <button
-                className="secondary-button"
-                type="button"
-                onClick={saveTemplate}
-                disabled={saving}
+            <span className="button-icon" aria-hidden="true">
+              ✎
+            </span>
+            Nhập giá trị
+          </button>
+          <button
+            className={activeMode === 'details' ? 'template-mode active' : 'template-mode'}
+            type="button"
+            role="tab"
+            aria-selected={activeMode === 'details'}
+            onClick={() => setActiveMode('details')}
+          >
+            <span className="button-icon" aria-hidden="true">
+              ⚙
+            </span>
+            Template details
+          </button>
+        </div>
+        <div className="template-workbench">
+          <div className="template-control-column">
+            {activeMode === 'details' && (
+              <SectionCard
+                className="template-compose"
+                title="Template details"
+                meta={selected?.builtIn ? 'Mặc định' : 'Cá nhân'}
               >
-                {saving ? 'Đang lưu...' : 'Lưu template'}
-              </button>
-              {selected && !selected.builtIn && (
-                <button
-                  className="danger-button"
-                  type="button"
-                  onClick={deleteTemplate}
-                  disabled={saving}
-                >
-                  Xóa
-                </button>
-              )}
-              {notice && (
-                <span className="template-notice" role="status">
-                  {notice}
-                </span>
-              )}
-            </div>
-          </SectionCard>
+                <div>
+                  <div className="template-meta">
+                    <label htmlFor="template-name">
+                      Tên template
+                      <input
+                        id="template-name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        placeholder="Ví dụ: Release report"
+                      />
+                    </label>
+                    <label htmlFor="template-description">
+                      Mô tả
+                      <input
+                        id="template-description"
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
+                        placeholder="Template dùng cho..."
+                      />
+                    </label>
+                  </div>
+                  <label className="template-content-label" htmlFor="template-content">
+                    Nội dung template
+                    <textarea
+                      id="template-content"
+                      className="template-content"
+                      value={content}
+                      onChange={(event) => updateContent(event.target.value)}
+                      placeholder="Viết nội dung và dùng {{placeholder}}..."
+                      rows={12}
+                    />
+                  </label>
+                  <div className="template-editor-actions">
+                    <button
+                      className="secondary-button"
+                      type="button"
+                      onClick={saveTemplate}
+                      disabled={saving}
+                    >
+                      <span className="button-icon" aria-hidden="true">
+                        {saving ? '…' : '✓'}
+                      </span>
+                      {saving ? 'Đang lưu...' : 'Lưu template'}
+                    </button>
+                    {selected && !selected.builtIn && (
+                      <button
+                        className="danger-button"
+                        type="button"
+                        onClick={deleteTemplate}
+                        disabled={saving}
+                      >
+                        <span className="button-icon" aria-hidden="true">
+                          ×
+                        </span>
+                        Xóa
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </SectionCard>
+            )}
+            {activeMode === 'values' && (
+              <SectionCard
+                className="template-values"
+                title="Nhập giá trị"
+                meta={`${variables.length} placeholder · giá trị không được gửi lên server`}
+              >
+                <div className="template-values-grid">
+                  {variables.length ? (
+                    variables.map((variable) => (
+                      <label key={variable}>
+                        {formatVariableName(variable)}
+                        <textarea
+                          value={values[variable] ?? ''}
+                          onChange={(event) =>
+                            setValues((current) => ({ ...current, [variable]: event.target.value }))
+                          }
+                          rows={
+                            variable.includes('summary') ||
+                            variable.includes('message') ||
+                            variable.includes('done') ||
+                            variable.includes('remaining') ||
+                            variable.includes('confirmation')
+                              ? 3
+                              : 1
+                          }
+                          placeholder="Có thể để trống"
+                        />
+                      </label>
+                    ))
+                  ) : (
+                    <p className="empty-state">
+                      Thêm placeholder vào nội dung để xuất hiện ô nhập.
+                    </p>
+                  )}
+                </div>
+              </SectionCard>
+            )}
+          </div>
           <SectionCard
             className="template-preview"
             title="Preview"
             meta="Nội dung sau khi thay placeholder"
             action={
               <button className="copy-button" type="button" onClick={copyRendered}>
-                {copied ? 'Đã copy ✓' : 'Copy text'}
+                <span className="button-icon" aria-hidden="true">
+                  {copied ? '✓' : '⧉'}
+                </span>
+                {copied ? 'Đã copy' : 'Copy text'}
               </button>
             }
           >
             <pre>{rendered || 'Preview sẽ hiển thị ở đây.'}</pre>
           </SectionCard>
         </div>
-        <SectionCard
-          className="template-values"
-          title="Nhập giá trị"
-          meta={`${variables.length} placeholder · giá trị không được gửi lên server`}
-        >
-          <div className="template-values-grid">
-            {variables.length ? (
-              variables.map((variable) => (
-                <label key={variable}>
-                  {formatVariableName(variable)}
-                  <textarea
-                    value={values[variable] ?? ''}
-                    onChange={(event) =>
-                      setValues((current) => ({ ...current, [variable]: event.target.value }))
-                    }
-                    rows={
-                      variable.includes('summary') ||
-                      variable.includes('message') ||
-                      variable.includes('done') ||
-                      variable.includes('remaining') ||
-                      variable.includes('confirmation')
-                        ? 3
-                        : 1
-                    }
-                    placeholder="Có thể để trống"
-                  />
-                </label>
-              ))
-            ) : (
-              <p className="empty-state">Thêm placeholder vào nội dung để xuất hiện ô nhập.</p>
-            )}
-          </div>
-        </SectionCard>
       </div>
     </div>
   );

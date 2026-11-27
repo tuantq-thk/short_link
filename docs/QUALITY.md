@@ -28,7 +28,10 @@ npm run build
 16. Template switching: nhập giá trị ở template A, chuyển sang template B có placeholder trùng tên; B không được tự kế thừa giá trị của A.
 17. Storage mode `local`: tạo/sửa/xóa template, reload vẫn giữ definition trong browser; values report không được giữ lại.
 18. Storage mode `supabase`: chạy migration, set env mode, reload ở browser khác vẫn thấy template custom; create/update/delete đi qua `/api/templates`.
-19. Mobile header: ở viewport 320–390px vẫn nhìn thấy badge `INTERNAL TOOLKIT`, menu không che logo và có thể cuộn ngang nếu cần.
+19. Template library: nhiều template được chọn bằng dropdown; import một object hoặc array JSON hợp lệ sẽ thêm template và chọn template đầu tiên vừa import; export tạo được JSON của template hiện tại.
+20. Template modes: mode `Nhập giá trị` mặc định ở cột trái, mode `Template details` chỉnh nội dung ở cùng cột, Preview cố định ở cột phải.
+21. Template actions: Import/Export/Save/Delete/Copy có icon phía trước; action thành công hiển thị text feedback và `Copy text` đổi trạng thái sau khi copy.
+22. Mobile header: ở viewport 320–390px vẫn nhìn thấy badge `INTERNAL TOOLKIT`, menu không che logo và có thể cuộn ngang nếu cần.
 
 ## Load check đề xuất trước khi công khai rộng
 
