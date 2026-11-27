@@ -28,7 +28,7 @@ npm run build
 16. Template switching: nhập giá trị ở template A, chuyển sang template B có placeholder trùng tên; B không được tự kế thừa giá trị của A.
 17. Storage mode `local`: tạo/sửa/xóa template, reload vẫn giữ definition trong browser; values report không được giữ lại.
 18. Storage mode `supabase`: chạy migration, set env mode, reload ở browser khác vẫn thấy template custom; create/update/delete đi qua `/api/templates`.
-17. Mobile header: ở viewport 320–390px vẫn nhìn thấy badge `INTERNAL TOOLKIT`, menu không che logo và có thể cuộn ngang nếu cần.
+19. Mobile header: ở viewport 320–390px vẫn nhìn thấy badge `INTERNAL TOOLKIT`, menu không che logo và có thể cuộn ngang nếu cần.
 
 ## Load check đề xuất trước khi công khai rộng
 

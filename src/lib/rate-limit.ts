@@ -11,7 +11,10 @@ export function checkCreateRateLimit(ip: string, cost = 1, now = Date.now()) {
     return { allowed: cost <= RATE_LIMIT_MAX_CREATES, remaining: RATE_LIMIT_MAX_CREATES - cost };
   }
   if (current.count + cost > RATE_LIMIT_MAX_CREATES) {
-    return { allowed: false as const, retryAfter: Math.max(1, Math.ceil((current.resetAt - now) / 1000)) };
+    return {
+      allowed: false as const,
+      retryAfter: Math.max(1, Math.ceil((current.resetAt - now) / 1000)),
+    };
   }
   current.count += cost;
   return { allowed: true as const, remaining: RATE_LIMIT_MAX_CREATES - current.count };

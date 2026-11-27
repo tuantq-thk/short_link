@@ -7,8 +7,15 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 export default defineConfig([
   {
     files: ['**/*.{ts,tsx}'],
-    languageOptions: { parser: tsParser, parserOptions: { ecmaFeatures: { jsx: true }, sourceType: 'module' } },
-    plugins: { '@typescript-eslint': tsPlugin, '@next/next': nextPlugin, 'react-hooks': reactHooksPlugin },
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: { ecmaFeatures: { jsx: true }, sourceType: 'module' },
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+      '@next/next': nextPlugin,
+      'react-hooks': reactHooksPlugin,
+    },
     rules: {
       ...tsPlugin.configs.recommended.rules,
       ...nextPlugin.configs.recommended.rules,

@@ -1,8 +1,6 @@
 import { MAX_URL_LENGTH } from '@/lib/constants';
 
-export type UrlValidationResult =
-  | { ok: true; url: string }
-  | { ok: false; message: string };
+export type UrlValidationResult = { ok: true; url: string } | { ok: false; message: string };
 
 /** Accepts all public URL schemes except executable/local-only schemes. */
 export function normalizeDestination(input: string): UrlValidationResult {
@@ -16,11 +14,17 @@ export function normalizeDestination(input: string): UrlValidationResult {
   try {
     parsed = new URL(candidate);
   } catch {
-    return { ok: false, message: 'Đường dẫn chưa hợp lệ. Hãy nhập đầy đủ, ví dụ https://example.com.' };
+    return {
+      ok: false,
+      message: 'Đường dẫn chưa hợp lệ. Hãy nhập đầy đủ, ví dụ https://example.com.',
+    };
   }
 
   if (!['http:', 'https:'].includes(parsed.protocol)) {
-    return { ok: false, message: 'Hiện chỉ hỗ trợ đường dẫn web bắt đầu bằng http:// hoặc https://.' };
+    return {
+      ok: false,
+      message: 'Hiện chỉ hỗ trợ đường dẫn web bắt đầu bằng http:// hoặc https://.',
+    };
   }
   if (!parsed.hostname || parsed.hostname.includes(' ')) {
     return { ok: false, message: 'Đường dẫn cần có tên miền hợp lệ.' };

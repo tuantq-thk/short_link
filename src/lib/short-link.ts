@@ -23,8 +23,10 @@ export function getShortUrlBase(request: Request): string {
 
   try {
     const configuredUrl = new URL(configuredBase);
-    const isLocalhost = configuredUrl.hostname === 'localhost' || configuredUrl.hostname === '127.0.0.1';
-    if (!isLocalhost && ['http:', 'https:'].includes(configuredUrl.protocol)) return configuredUrl.origin;
+    const isLocalhost =
+      configuredUrl.hostname === 'localhost' || configuredUrl.hostname === '127.0.0.1';
+    if (!isLocalhost && ['http:', 'https:'].includes(configuredUrl.protocol))
+      return configuredUrl.origin;
   } catch {
     // Invalid canonical URL must not make a valid link point nowhere.
   }

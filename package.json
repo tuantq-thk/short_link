@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"next.config.ts\" \"eslint.config.mjs\" \"package.json\" \"README.md\" \"CHANGELOG.md\" \"docs/**/*.md\" \".github/workflows/*.yml\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"next.config.ts\" \"eslint.config.mjs\" \"package.json\" \"README.md\" \"CHANGELOG.md\" \"docs/**/*.md\" \".github/workflows/*.yml\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.57.0",
@@ -22,6 +24,7 @@
     "@types/react-dom": "^19.1.9",
     "eslint": "^9.37.0",
     "eslint-config-next": "^15.5.6",
+    "prettier": "^3.10.1",
     "typescript": "^5.9.3"
   }
 }

@@ -15,10 +15,13 @@ export async function POST(request: Request) {
   const ip = getClientIp(request);
   const limit = checkCreateRateLimit(ip);
   if (!limit.allowed) {
-    return NextResponse.json({ error: 'Bạn tạo link hơi nhanh. Vui lòng thử lại sau.' }, {
-      status: 429,
-      headers: { 'Retry-After': String(limit.retryAfter), 'Cache-Control': 'no-store' },
-    });
+    return NextResponse.json(
+      { error: 'Bạn tạo link hơi nhanh. Vui lòng thử lại sau.' },
+      {
+        status: 429,
+        headers: { 'Retry-After': String(limit.retryAfter), 'Cache-Control': 'no-store' },
+      },
+    );
   }
 
   let payload: unknown;
@@ -40,14 +43,23 @@ export async function POST(request: Request) {
     const created = await insertShortLink(supabase, destination.url);
     if ('error' in created) {
       console.error('link_create_failed', { message: created.error });
-      return NextResponse.json({ error: 'Chưa tạo được link. Vui lòng thử lại sau.' }, { status: 503 });
+      return NextResponse.json(
+        { error: 'Chưa tạo được link. Vui lòng thử lại sau.' },
+        { status: 503 },
+      );
     }
-    return NextResponse.json({ code: created.code, shortUrl: `${getShortUrlBase(request)}/${created.code}` }, {
-      status: 201,
-      headers: { 'Cache-Control': 'no-store' },
-    });
+    return NextResponse.json(
+      { code: created.code, shortUrl: `${getShortUrlBase(request)}/${created.code}` },
+      {
+        status: 201,
+        headers: { 'Cache-Control': 'no-store' },
+      },
+    );
   } catch (error) {
     console.error('link_create_unavailable', error instanceof Error ? error.message : 'unknown');
-    return NextResponse.json({ error: 'Dịch vụ đang tạm thời bận. Vui lòng thử lại sau.' }, { status: 503 });
+    return NextResponse.json(
+      { error: 'Dịch vụ đang tạm thời bận. Vui lòng thử lại sau.' },
+      { status: 503 },
+    );
   }
 }

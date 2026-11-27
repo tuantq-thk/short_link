@@ -8,12 +8,16 @@ export const dynamic = 'force-dynamic';
 export async function GET(_request: Request, context: { params: Promise<{ code: string }> }) {
   const { code } = await context.params;
   if (code.length !== CODE_LENGTH || [...code].some((char) => !CODE_ALPHABET.includes(char))) {
-    return new Response('Link không tồn tại.', { status: 404, headers: { 'Cache-Control': 'no-store' } });
+    return new Response('Link không tồn tại.', {
+      status: 404,
+      headers: { 'Cache-Control': 'no-store' },
+    });
   }
 
   try {
     const supabase = getSupabaseAdmin();
-    const { data, error } = await supabase.from('links')
+    const { data, error } = await supabase
+      .from('links')
       .select('destination_url')
       .eq('code', code)
       .maybeSingle();
@@ -25,7 +29,10 @@ export async function GET(_request: Request, context: { params: Promise<{ code: 
       });
     }
     if (!data) {
-      return new Response('Link không tồn tại hoặc đã bị gỡ.', { status: 404, headers: { 'Cache-Control': 'no-store' } });
+      return new Response('Link không tồn tại hoặc đã bị gỡ.', {
+        status: 404,
+        headers: { 'Cache-Control': 'no-store' },
+      });
     }
     return NextResponse.redirect(data.destination_url, {
       status: 302,

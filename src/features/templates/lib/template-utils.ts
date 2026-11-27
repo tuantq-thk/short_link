@@ -42,7 +42,10 @@ export function extractTemplateVariables(content: string): string[] {
 }
 
 export function renderTemplate(content: string, values: Record<string, string>): string {
-  return content.replace(/{{\s*([a-zA-Z0-9_.-]+)\s*}}/g, (_, variable: string) => values[variable] ?? '');
+  return content.replace(
+    /{{\s*([a-zA-Z0-9_.-]+)\s*}}/g,
+    (_, variable: string) => values[variable] ?? '',
+  );
 }
 
 export function formatVariableName(variable: string): string {

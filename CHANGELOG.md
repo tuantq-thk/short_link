@@ -5,6 +5,7 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 ## [0.1.0] - 2026-11-27
 
 ### Added
+
 - Trang rút gọn link public, responsive, tiếng Việt, không cần tài khoản.
 - Nhận URL HTTP/HTTPS từ mọi domain; validate định dạng và giới hạn 4.000 ký tự.
 - Tạo mã ngẫu nhiên 7 ký tự với kiểm tra unique và retry khi va chạm.
@@ -18,4 +19,3 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Thêm template storage mode `local`/`supabase`, migration `public.templates` và server CRUD API cho template dùng chung.
 - Tái cấu trúc source theo feature, tách CSS Module cho từng tool và lazy-load Link tools/Templates để giảm initial route bundle.
 - Cố định app shell theo viewport, giữ state các tool đã mở và chỉ scroll/chuyển động trong vùng content khi đổi tab.
-
