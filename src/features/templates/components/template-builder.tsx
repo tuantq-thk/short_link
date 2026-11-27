@@ -20,17 +20,14 @@ function initialValues(content: string): Record<string, string> {
 }
 
 function valuesForTemplate(template: ToolTemplate): Record<string, string> {
-  if (template.id !== 'chatwork-task-report') return initialValues(template.content);
+  if (template.id !== 'chatwork-daily-progress') return initialValues(template.content);
   return {
     ...initialValues(template.content),
     spec: '->',
     design: '->',
-    pull_request: '->',
-    pr_summary: 'Chưa có thay đổi đáng chú ý',
-    impact: '->',
-    done: 'Đã hoàn thành theo phạm vi trên',
-    remaining: '->',
-    confirmation: '->',
+    done: '-',
+    next: '-',
+    blocker: '-',
   };
 }
 

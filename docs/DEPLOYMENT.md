@@ -5,7 +5,7 @@
 1. Tạo project Free.
 2. Mở SQL Editor và chạy `supabase/migrations/202611270001_create_links.sql`.
 3. Chạy tiếp `supabase/migrations/202611270002_grant_links_to_service_role.sql` để cấp quyền tối thiểu cho server role.
-4. Nếu muốn lưu template dùng chung, chạy thêm `supabase/migrations/202611270003_create_templates.sql`.
+4. Nếu muốn lưu template dùng chung, chạy thêm `supabase/migrations/202611270003_create_templates.sql`, sau đó `supabase/migrations/202611270004_seed_chatwork_templates.sql`.
 5. Trong Project Settings → API, lấy Project URL và service role secret.
 6. Không đưa service role secret vào mã nguồn, client code hoặc biến `NEXT_PUBLIC_*`.
 
@@ -49,6 +49,7 @@ Với cách này, GitHub Actions chỉ trả lời “code có qua kiểm tra kh
 ### Template không tải được
 
 - Kiểm tra đã chạy migration `202611270003_create_templates.sql` trong đúng project.
+- Nếu muốn seed đủ 5 mẫu Chatwork trong database, chạy thêm `202611270004_seed_chatwork_templates.sql`.
 - Kiểm tra `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE=supabase` đã được set ở Vercel Production và redeploy.
 - Template API hiện chưa có authentication; ở chế độ `supabase`, bất kỳ người truy cập được app đều có thể đọc/sửa template. Chỉ dùng cho môi trường internal được bảo vệ hoặc bổ sung Auth trước khi public.
 

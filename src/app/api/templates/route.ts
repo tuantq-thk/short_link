@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { DEFAULT_TEMPLATES } from '@/features/templates/lib/template-utils';
 import { getSupabaseAdmin } from '@/lib/supabase/admin';
 
 export const runtime = 'nodejs';
@@ -55,8 +56,12 @@ export async function GET() {
       .order('built_in', { ascending: false })
       .order('updated_at', { ascending: false });
     if (error) throw error;
+    const customTemplates = (data || [])
+      .filter((row) => !row.built_in)
+      .map(mapTemplate)
+      .filter((template) => !DEFAULT_TEMPLATES.some((builtIn) => builtIn.id === template.id));
     return NextResponse.json(
-      { templates: (data || []).map(mapTemplate) },
+      { templates: [...DEFAULT_TEMPLATES, ...customTemplates] },
       { headers: { 'Cache-Control': 'no-store' } },
     );
   } catch (error) {

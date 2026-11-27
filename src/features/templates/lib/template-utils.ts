@@ -11,23 +11,109 @@ export const LEGACY_TEMPLATE_STORAGE_KEY = 'link-gon-tool-templates-v1';
 
 export const DEFAULT_TEMPLATES: ToolTemplate[] = [
   {
-    id: 'chatwork-task-report',
-    name: 'Chatwork · Task report',
-    description: 'Report tiến độ một task theo format [info] của Chatwork.',
+    id: 'chatwork-daily-progress',
+    name: 'Chatwork · Daily progress',
+    description: 'Báo cáo tiến độ hằng ngày của một task.',
     builtIn: true,
     content: `[info][title]Task report: {{task}}[/title]
 Spec: {{spec}}
 Design: {{design}}
 
+Đã làm:
+- {{done}}
+
+Tiếp theo:
+- {{next}}
+
+Blocker:
+- {{blocker}}
+[/info]`,
+  },
+  {
+    id: 'chatwork-task-completed',
+    name: 'Chatwork · Task completed',
+    description: 'Báo cáo hoàn thành task kèm PR và kết quả kiểm tra.',
+    builtIn: true,
+    content: `[info][title]Task completed: {{task}}[/title]
+Spec: {{spec}}
+Design: {{design}}
+
 Pull request: {{pull_request}}
 PR summary:
-- {{pr_summary}}
+- {{summary}}
 - {{impact}}
 
+Kiểm tra:
+- {{checks}}
+- {{check_result}}
+
 Message:
-- {{done}}
-- {{remaining}}
-- {{confirmation}}
+- {{message}}
+[/info]`,
+  },
+  {
+    id: 'chatwork-review-request',
+    name: 'Chatwork · Review request',
+    description: 'Gửi task/PR cho người khác review với phạm vi rõ ràng.',
+    builtIn: true,
+    content: `[info][title]Review request: {{task}}[/title]
+Spec: {{spec}}
+Design: {{design}}
+
+Pull request: {{pull_request}}
+PR summary:
+- {{summary}}
+- {{review_focus}}
+
+Đã kiểm tra:
+- {{checks}}
+
+Nhờ review:
+- {{request}}
+[/info]`,
+  },
+  {
+    id: 'chatwork-blocker-support',
+    name: 'Chatwork · Blocker & support',
+    description: 'Báo cáo blocker và nêu rõ hỗ trợ cần người khác xử lý.',
+    builtIn: true,
+    content: `[info][title]Blocker: {{task}}[/title]
+Spec: {{spec}}
+Pull request: {{pull_request}}
+
+Vấn đề:
+- {{problem}}
+
+Ảnh hưởng:
+- {{impact}}
+
+Đã thử:
+- {{tried}}
+
+Cần hỗ trợ:
+- {{support}}
+[/info]`,
+  },
+  {
+    id: 'chatwork-multiple-prs',
+    name: 'Chatwork · Multiple PRs',
+    description: 'Báo cáo task có nhiều pull request liên quan.',
+    builtIn: true,
+    content: `[info][title]Task report: {{task}}[/title]
+Spec: {{spec}}
+Design: {{design}}
+
+PR 1: {{pr_1}}
+- {{pr_1_summary}}
+
+PR 2: {{pr_2}}
+- {{pr_2_summary}}
+
+Kiểm tra:
+- {{checks}}
+
+Message:
+- {{message}}
 [/info]`,
   },
 ];

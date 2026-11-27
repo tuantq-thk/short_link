@@ -9,7 +9,7 @@ Bộ công cụ nội bộ cho team: root hiển thị danh mục tools, từ đ
 - Redirect HTTP 302 đến URL đích; cache redirect ở CDN tối đa 5 phút.
 - Sao chép link bằng một chạm, tạo link tiếp theo, thông báo lỗi tiếng Việt.
 - Nhập tối đa 10 hàng gồm label tùy chọn và URL, tạo nhiều short link một lần và copy/tải report `teamkit-links.txt` dạng `label : link rút gọn`.
-- Tạo, sửa, xóa nhiều template nội bộ; template Chatwork Task Report có sẵn và hỗ trợ placeholder `{{ten_bien}}`.
+- Tạo, sửa, xóa nhiều template nội bộ; 5 template Chatwork theo tình huống có sẵn và hỗ trợ placeholder `{{ten_bien}}`.
 - Responsive, accessible, root client workspace với tool catalog; link/redirect vẫn chạy qua server routes.
 - Không đăng nhập, không analytics click, không lưu IP.
 - Rate limit tạo link best-effort theo IP: 10 lần/phút trên mỗi Vercel function isolate.
@@ -92,7 +92,7 @@ Mở công cụ **Template trả lời**, chọn template từ dropdown hoặc b
 ## Deploy miễn phí ban đầu
 
 1. Đẩy repository lên GitHub.
-2. Tạo project Supabase Free và chạy migration SQL ở trên. Khi dùng template shared, chạy thêm `supabase/migrations/202611270003_create_templates.sql`.
+2. Tạo project Supabase Free và chạy migration SQL ở trên. Khi dùng template shared, chạy thêm `supabase/migrations/202611270003_create_templates.sql` và `supabase/migrations/202611270004_seed_chatwork_templates.sql`.
 3. Import repo vào Vercel. Gói Hobby chỉ phù hợp cho dự án cá nhân, phi thương mại; hãy xác nhận điều khoản hiện hành nếu dùng trong tổ chức/công ty.
 4. Thêm Environment Variables cho Production (và Preview nếu cần):
    - `SUPABASE_URL`: Project URL.
