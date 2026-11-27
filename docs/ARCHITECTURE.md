@@ -7,11 +7,12 @@ Browser
   ├─ GET /             → Next.js client workspace → tool catalog
   ├─ POST /api/links   → Node.js function → validate → Supabase INSERT
   ├─ POST /api/links/bulk → Node.js function → per-item validate/create → partial report
+  ├─ /api/templates    → Node.js function → service role → public.templates (supabase mode)
   └─ GET /{code}       → Edge route → Supabase lookup on cache miss → 302
                                              ↓
                                       CDN cache (5 min)
 
-Link tool giữ hai flow single/bulk. Template Builder là client-only: template definitions được lưu trong localStorage, còn values chỉ sống trong React state của phiên hiện tại; rendered text không gửi lên server. Template mặc định là Chatwork Task Report; custom template dùng placeholder `{{variable}}` và được render bằng cách thay thế text an toàn, không thực thi markup. Khi chuyển template, values được reset theo template mới để tránh rò dữ liệu giữa các report.
+Link tool giữ hai flow single/bulk. Template Builder có hai adapter lưu trữ được chọn bằng `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE`: local mode lưu template definitions trong localStorage; supabase mode dùng `/api/templates` và bảng `public.templates` qua service role. Values chỉ sống trong React state của phiên hiện tại; rendered text không gửi lên server. Khi chuyển template, values được reset theo template mới để tránh rò dữ liệu giữa các report. Template API chưa có authentication và chỉ phù hợp cho internal deployment.
 ```
 
 ## Dữ liệu

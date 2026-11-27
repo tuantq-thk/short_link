@@ -80,17 +80,18 @@ Sau khi tạo, có thể copy toàn bộ report hoặc tải file `teamkit-links
 
 ### Template trả lời
 
-Mở công cụ **Template trả lời**, chọn template Chatwork mặc định hoặc bấm **Tạo mới**. Trong nội dung template, dùng placeholder dạng `{{task}}`, `{{spec}}`, `{{pull_request}}`; các placeholder sẽ tự sinh thành ô nhập giá trị. Sau khi điền, copy phần preview để gửi vào group. Template definitions được lưu trong `localStorage` của trình duyệt hiện tại, chưa đồng bộ giữa các thành viên. Giá trị nhập cho lần report hiện tại chỉ nằm trong React state và sẽ mất khi reload; không lưu secret hoặc dữ liệu nhạy cảm.
+Mở công cụ **Template trả lời**, chọn template Chatwork mặc định hoặc bấm **Tạo mới**. Trong nội dung template, dùng placeholder dạng `{{task}}`, `{{spec}}`, `{{pull_request}}`; các placeholder sẽ tự sinh thành ô nhập giá trị. Sau khi điền, copy phần preview để gửi vào group. Template storage có thể chọn bằng `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE`: `local` lưu definitions trong `localStorage` của trình duyệt hiện tại; `supabase` lưu template dùng chung qua server API. Giá trị nhập cho lần report hiện tại chỉ nằm trong React state và sẽ mất khi reload; không lưu secret hoặc dữ liệu nhạy cảm.
 
 ## Deploy miễn phí ban đầu
 
 1. Đẩy repository lên GitHub.
-2. Tạo project Supabase Free và chạy migration SQL ở trên.
+2. Tạo project Supabase Free và chạy migration SQL ở trên. Khi dùng template shared, chạy thêm `supabase/migrations/202611270003_create_templates.sql`.
 3. Import repo vào Vercel. Gói Hobby chỉ phù hợp cho dự án cá nhân, phi thương mại; hãy xác nhận điều khoản hiện hành nếu dùng trong tổ chức/công ty.
 4. Thêm Environment Variables cho Production (và Preview nếu cần):
    - `SUPABASE_URL`: Project URL.
    - `SUPABASE_SERVICE_ROLE_KEY`: service role secret; tuyệt đối không đặt tiền tố `NEXT_PUBLIC_`.
    - `NEXT_PUBLIC_APP_URL`: URL canonical, ví dụ `https://teamkit.vercel.app`.
+   - `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE`: `local` cho browser-only hoặc `supabase` để dùng chung template trên môi trường deploy.
 5. Deploy. Smoke check trang chủ, tạo link, mở redirect, mã sai và URL sai.
 
 Đọc [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) để biết từng bước, cấu hình GitHub Actions và kiểm tra sau deploy.

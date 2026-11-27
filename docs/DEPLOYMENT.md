@@ -5,8 +5,9 @@
 1. Tạo project Free.
 2. Mở SQL Editor và chạy `supabase/migrations/202611270001_create_links.sql`.
 3. Chạy tiếp `supabase/migrations/202611270002_grant_links_to_service_role.sql` để cấp quyền tối thiểu cho server role.
-4. Trong Project Settings → API, lấy Project URL và service role secret.
-5. Không đưa service role secret vào mã nguồn, client code hoặc biến `NEXT_PUBLIC_*`.
+4. Nếu muốn lưu template dùng chung, chạy thêm `supabase/migrations/202611270003_create_templates.sql`.
+5. Trong Project Settings → API, lấy Project URL và service role secret.
+6. Không đưa service role secret vào mã nguồn, client code hoặc biến `NEXT_PUBLIC_*`.
 
 ## 2. Cấu hình Vercel
 
@@ -16,6 +17,7 @@
    - `SUPABASE_URL`
    - `SUPABASE_SERVICE_ROLE_KEY`
    - `NEXT_PUBLIC_APP_URL` (canonical origin, không có slash cuối)
+   - `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE`: `local` hoặc `supabase`; deploy team dùng chung nên chọn `supabase`.
 4. Deploy production.
 
 ## 3. CI/CD với GitHub Actions
@@ -32,7 +34,18 @@ Trong GitHub repository, tạo các Actions secrets sau:
 - `VERCEL_ORG_ID`: giá trị `orgId` trong `.vercel/project.json` sau khi chạy `npx vercel link`;
 - `VERCEL_PROJECT_ID`: giá trị `projectId` trong cùng file.
 
+Các secret phải được tạo đúng trong GitHub repository → Settings → Environments → `production` → Environment secrets, vì job deploy đang dùng environment này. Có thể lấy ID local bằng:
+
+```bash
+npx vercel link
+cat .vercel/project.json
+```
+
+Không đặt `VERCEL_TOKEN` trong `vars`; phải đặt trong `secrets`. Nếu thiếu, workflow sẽ dừng ở bước `Verify Vercel secrets` và báo chính xác secret nào còn thiếu trước khi gọi Vercel CLI.
+
 Có thể đặt các secrets này ở environment `production` để thêm approval trước deploy. Các biến runtime `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` và `NEXT_PUBLIC_APP_URL` vẫn phải được cấu hình trong Vercel Project Settings cho Production; workflow lấy chúng qua `vercel pull`, không ghi secret vào repository.
+
+`NEXT_PUBLIC_TEMPLATE_STORAGE_MODE=local` không gọi Supabase template API và giữ template trong browser. `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE=supabase` gọi `/api/templates`; API dùng service role ở server để đọc/ghi bảng `public.templates`.
 
 Nếu đã bật Vercel Git Integration cho cùng repository, chỉ dùng một cơ chế deploy production để tránh deploy hai lần. Với workflow này, hãy tắt automatic production deploy của Git Integration hoặc chỉ dùng Git Integration và giữ lại phần CI.
 
@@ -42,6 +55,12 @@ Nếu đã bật Vercel Git Integration cho cùng repository, chỉ dùng một 
 - Đảm bảo key là service role/secret key; không dùng anon/publishable key.
 - Chạy migration `202611270002_grant_links_to_service_role.sql` trong đúng Supabase project, sau đó redeploy.
 - Không cấp quyền `insert`/`select` cho `anon` hoặc `authenticated` để sửa lỗi này; API phải tiếp tục dùng server role.
+
+### Template không tải được
+
+- Kiểm tra đã chạy migration `202611270003_create_templates.sql` trong đúng project.
+- Kiểm tra `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE=supabase` đã được set ở Vercel Production và redeploy.
+- Template API hiện chưa có authentication; ở chế độ `supabase`, bất kỳ người truy cập được app đều có thể đọc/sửa template. Chỉ dùng cho môi trường internal được bảo vệ hoặc bổ sung Auth trước khi public.
 
 ### Short URL trỏ về `localhost`
 
