@@ -5,7 +5,15 @@ export const metadata: Metadata = {
   title: 'TeamKit — Internal tools cho team',
   description: 'Bộ công cụ nội bộ cho link, template và report.',
   applicationName: 'TeamKit',
-  robots: { index: true, follow: true },
+  keywords: ['TeamKit', 'internal tools', 'link shortener', 'template report'],
+  robots: { index: false, follow: false },
+  openGraph: {
+    title: 'TeamKit — Internal tools cho team',
+    description: 'Bộ công cụ nội bộ cho link, template và report.',
+    type: 'website',
+    siteName: 'TeamKit',
+    locale: 'vi_VN',
+  },
 };
 
 export const viewport: Viewport = {
