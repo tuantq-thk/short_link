@@ -117,6 +117,15 @@
   font-size: 13px;
   font-weight: 650;
 }
+.featureRoot :global(.template-library-controls) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+}
+.featureRoot :global(.library-action) {
+  min-height: 44px;
+}
 .featureRoot :global(.template-select:focus) {
   border-color: #938cf7;
   box-shadow: 0 0 0 3px rgb(98 87 238 / 10%);
@@ -377,6 +386,12 @@
   }
   .featureRoot :global(.template-preview) {
     position: static;
+  }
+  .featureRoot :global(.template-library-controls) {
+    grid-template-columns: 1fr 1fr;
+  }
+  .featureRoot :global(.template-select) {
+    grid-column: 1 / -1;
   }
   .featureRoot :global(.template-topline-actions) {
     width: 100%;

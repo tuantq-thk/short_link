@@ -128,6 +128,16 @@ export function TemplateBuilder() {
     setActiveMode('details');
   }
 
+  function editSelectedTemplate() {
+    if (!selected) return;
+    setActiveMode('details');
+    setNotice(
+      selected.builtIn
+        ? 'Template mặc định sẽ được lưu thành một bản custom khi bạn bấm Lưu.'
+        : 'Đang chỉnh sửa template.',
+    );
+  }
+
   async function importTemplates(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     event.target.value = '';
@@ -257,6 +267,7 @@ export function TemplateBuilder() {
   async function deleteTemplate() {
     const selected = templates.find((item) => item.id === selectedId);
     if (!selected || selected.builtIn) return;
+    if (!window.confirm(`Bạn có chắc muốn xóa template "${selected.name}" không?`)) return;
     const nextTemplates = templates.filter((item) => item.id !== selectedId);
     setSaving(true);
     try {
@@ -359,22 +370,47 @@ export function TemplateBuilder() {
           <label htmlFor="template-select">Template library</label>
           <small>{templates.length} template</small>
         </div>
-        <select
-          id="template-select"
-          className="template-select"
-          value={selectedId === 'new' ? '' : selectedId}
-          onChange={(event) => {
-            const template = templates.find((item) => item.id === event.target.value);
-            if (template) loadTemplate(template);
-          }}
-        >
-          {selectedId === 'new' && <option value="">Template mới chưa lưu</option>}
-          {templates.map((template) => (
-            <option value={template.id} key={template.id}>
-              {template.name}
-            </option>
-          ))}
-        </select>
+        <div className="template-library-controls">
+          <select
+            id="template-select"
+            className="template-select"
+            value={selectedId === 'new' ? '' : selectedId}
+            onChange={(event) => {
+              const template = templates.find((item) => item.id === event.target.value);
+              if (template) loadTemplate(template);
+            }}
+          >
+            {selectedId === 'new' && <option value="">Template mới chưa lưu</option>}
+            {templates.map((template) => (
+              <option value={template.id} key={template.id}>
+                {template.name}
+              </option>
+            ))}
+          </select>
+          <button
+            className="outline-button library-action"
+            type="button"
+            onClick={editSelectedTemplate}
+            disabled={saving || !selected}
+          >
+            <span className="button-icon" aria-hidden="true">
+              ✎
+            </span>
+            Chỉnh sửa
+          </button>
+          <button
+            className="danger-button library-action"
+            type="button"
+            onClick={deleteTemplate}
+            disabled={saving || !selected || selected.builtIn}
+            title={selected?.builtIn ? 'Template mặc định không thể xóa' : 'Xóa template'}
+          >
+            <span className="button-icon" aria-hidden="true">
+              ×
+            </span>
+            Xóa
+          </button>
+        </div>
         <p className="template-selected-description">
           {selected?.description || 'Template cá nhân'}
         </p>
