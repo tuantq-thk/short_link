@@ -41,8 +41,19 @@ export async function POST(request: Request) {
       const code = generateShortCode();
       const { error } = await supabase.from('links').insert({ code, destination_url: destination.url });
       if (!error) {
-        const base = process.env.NEXT_PUBLIC_APP_URL || new URL(request.url).origin;
-        return NextResponse.json({ code, shortUrl: `${base.replace(/\/$/, '')}/${code}` }, {
+        const requestOrigin = new URL(request.url).origin;
+        const configuredBase = process.env.NEXT_PUBLIC_APP_URL?.trim();
+        let base = requestOrigin;
+        if (configuredBase) {
+          try {
+            const configuredUrl = new URL(configuredBase);
+            const isLocalhost = configuredUrl.hostname === 'localhost' || configuredUrl.hostname === '127.0.0.1';
+            if (!isLocalhost && ['http:', 'https:'].includes(configuredUrl.protocol)) base = configuredUrl.origin;
+          } catch {
+            // Invalid canonical URL must not make a valid link point nowhere.
+          }
+        }
+        return NextResponse.json({ code, shortUrl: `${base}/${code}` }, {
           status: 201,
           headers: { 'Cache-Control': 'no-store' },
         });

@@ -4,8 +4,9 @@
 
 1. Tạo project Free.
 2. Mở SQL Editor và chạy `supabase/migrations/202611270001_create_links.sql`.
-3. Trong Project Settings → API, lấy Project URL và service role secret.
-4. Không đưa service role secret vào mã nguồn, client code hoặc biến `NEXT_PUBLIC_*`.
+3. Chạy tiếp `supabase/migrations/202611270002_grant_links_to_service_role.sql` để cấp quyền tối thiểu cho server role.
+4. Trong Project Settings → API, lấy Project URL và service role secret.
+5. Không đưa service role secret vào mã nguồn, client code hoặc biến `NEXT_PUBLIC_*`.
 
 ## 2. Cấu hình Vercel
 
@@ -34,6 +35,17 @@ Trong GitHub repository, tạo các Actions secrets sau:
 Có thể đặt các secrets này ở environment `production` để thêm approval trước deploy. Các biến runtime `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` và `NEXT_PUBLIC_APP_URL` vẫn phải được cấu hình trong Vercel Project Settings cho Production; workflow lấy chúng qua `vercel pull`, không ghi secret vào repository.
 
 Nếu đã bật Vercel Git Integration cho cùng repository, chỉ dùng một cơ chế deploy production để tránh deploy hai lần. Với workflow này, hãy tắt automatic production deploy của Git Integration hoặc chỉ dùng Git Integration và giữ lại phần CI.
+
+### Lỗi `permission denied for table links`
+
+- Xác nhận `SUPABASE_URL` và `SUPABASE_SERVICE_ROLE_KEY` trong Vercel Production đang trỏ tới cùng project Supabase.
+- Đảm bảo key là service role/secret key; không dùng anon/publishable key.
+- Chạy migration `202611270002_grant_links_to_service_role.sql` trong đúng Supabase project, sau đó redeploy.
+- Không cấp quyền `insert`/`select` cho `anon` hoặc `authenticated` để sửa lỗi này; API phải tiếp tục dùng server role.
+
+### Short URL trỏ về `localhost`
+
+`NEXT_PUBLIC_APP_URL` trong local có thể là `http://localhost:3000`, nhưng Production phải dùng origin Vercel hoặc custom domain. Code cũng tự bỏ qua giá trị localhost trong môi trường deploy và dùng origin thực tế của request để tránh tạo link hỏng.
 
 ## 4. Local development
 

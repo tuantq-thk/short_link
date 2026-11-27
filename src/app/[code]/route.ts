@@ -17,7 +17,14 @@ export async function GET(_request: Request, context: { params: Promise<{ code: 
       .select('destination_url')
       .eq('code', code)
       .maybeSingle();
-    if (error || !data) {
+    if (error) {
+      console.error('link_lookup_failed', { code: error.code, message: error.message });
+      return new Response('Dịch vụ đang tạm thời bận. Vui lòng thử lại sau.', {
+        status: 503,
+        headers: { 'Cache-Control': 'no-store', 'Retry-After': '30' },
+      });
+    }
+    if (!data) {
       return new Response('Link không tồn tại hoặc đã bị gỡ.', { status: 404, headers: { 'Cache-Control': 'no-store' } });
     }
     return NextResponse.redirect(data.destination_url, {
