@@ -22,32 +22,22 @@
 
 ## 3. CI/CD với GitHub Actions
 
-Workflow [`.github/workflows/ci-cd.yml`](../.github/workflows/ci-cd.yml) sẽ:
+Workflow [`.github/workflows/ci-cd.yml`](../.github/workflows/ci-cd.yml) chỉ làm CI:
 
 - chạy `npm ci`, `npm run typecheck`, `npm run lint` và `npm run build` cho mọi pull request;
 - chạy lại toàn bộ kiểm tra trên mỗi push vào `main` hoặc `master`;
-- deploy production tự động sau khi kiểm tra thành công trên `main` hoặc `master`.
+- workflow không deploy Vercel và không cần `VERCEL_TOKEN`, `VERCEL_ORG_ID` hay `VERCEL_PROJECT_ID`.
 
-Trong GitHub repository, tạo các Actions secrets sau:
+Vercel deploy theo Git Integration:
 
-- `VERCEL_TOKEN`: token tạo trong Vercel Account → Tokens;
-- `VERCEL_ORG_ID`: giá trị `orgId` trong `.vercel/project.json` sau khi chạy `npx vercel link`;
-- `VERCEL_PROJECT_ID`: giá trị `projectId` trong cùng file.
+1. Trong Vercel, Import repository này và chọn framework Next.js.
+2. Đặt Production Branch là `master` (hoặc `main` nếu đổi branch chính).
+3. Bật automatic deployments. Pull request sẽ tạo Preview Deployment; push vào Production Branch sẽ tạo Production Deployment.
+4. Khai báo các runtime env trong Vercel Project Settings → Environment Variables, không khai báo trong GitHub Actions.
 
-Các secret phải được tạo đúng trong GitHub repository → Settings → Environments → `production` → Environment secrets, vì job deploy đang dùng environment này. Có thể lấy ID local bằng:
-
-```bash
-npx vercel link
-cat .vercel/project.json
-```
-
-Không đặt `VERCEL_TOKEN` trong `vars`; phải đặt trong `secrets`. Nếu thiếu, workflow sẽ dừng ở bước `Verify Vercel secrets` và báo chính xác secret nào còn thiếu trước khi gọi Vercel CLI.
-
-Có thể đặt các secrets này ở environment `production` để thêm approval trước deploy. Các biến runtime `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` và `NEXT_PUBLIC_APP_URL` vẫn phải được cấu hình trong Vercel Project Settings cho Production; workflow lấy chúng qua `vercel pull`, không ghi secret vào repository.
+Với cách này, GitHub Actions chỉ trả lời “code có qua kiểm tra không”, còn Vercel chịu trách nhiệm build/deploy như một project Vercel thông thường.
 
 `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE=local` không gọi Supabase template API và giữ template trong browser. `NEXT_PUBLIC_TEMPLATE_STORAGE_MODE=supabase` gọi `/api/templates`; API dùng service role ở server để đọc/ghi bảng `public.templates`.
-
-Nếu đã bật Vercel Git Integration cho cùng repository, chỉ dùng một cơ chế deploy production để tránh deploy hai lần. Với workflow này, hãy tắt automatic production deploy của Git Integration hoặc chỉ dùng Git Integration và giữ lại phần CI.
 
 ### Lỗi `permission denied for table links`
 
