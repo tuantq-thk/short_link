@@ -8,6 +8,7 @@ Dịch vụ rút gọn đường dẫn public, không cần tài khoản. Dán U
 - Tạo mã ngẫu nhiên 7 ký tự, tránh các ký tự dễ nhầm lẫn.
 - Redirect HTTP 302 đến URL đích; cache redirect ở CDN tối đa 5 phút.
 - Sao chép link bằng một chạm, tạo link tiếp theo, thông báo lỗi tiếng Việt.
+- Nhập tối đa 10 hàng gồm label tùy chọn và URL, tạo nhiều short link một lần và copy/tải report `.txt` dạng `label : link rút gọn`.
 - Responsive, accessible, landing page server-rendered; chỉ form dùng JavaScript phía client.
 - Không đăng nhập, không analytics click, không lưu IP.
 - Rate limit tạo link best-effort theo IP: 10 lần/phút trên mỗi Vercel function isolate.
@@ -29,12 +30,13 @@ src/
     layout.tsx            # Metadata và root layout
     page.tsx              # Trang landing server-rendered
   components/
-    link-shortener.tsx    # Form tương tác client-side
+    link-shortener.tsx    # Form single/bulk và copy/tải report
   lib/
     code.ts               # Sinh mã ngắn
     constants.ts          # Giới hạn dùng chung
     http.ts               # Đọc IP từ request
     rate-limit.ts         # Throttle best-effort
+    short-link.ts         # Tạo mã và link dùng chung cho single/bulk
     supabase/admin.ts     # Supabase server-only client
     url.ts                # Chuẩn hóa/kiểm tra URL
 supabase/migrations/      # Schema SQL
@@ -59,6 +61,17 @@ npm run dev
 ```
 
 Mở <http://localhost:3000>.
+
+### Rút gọn nhiều link
+
+Chọn tab **Nhiều link**, thêm từng hàng gồm label tùy chọn và URL bắt buộc:
+
+```text
+Label: Trang chủ       Link: https://example.com
+Label: (để trống)      Link: https://example.com/docs
+```
+
+Sau khi tạo, có thể copy toàn bộ report hoặc tải file `link-gon-report.txt` để gửi cho người khác. Label chỉ phục vụ report và không được lưu vào bảng `links`.
 
 ## Deploy miễn phí ban đầu
 

@@ -20,6 +20,8 @@ npm run build
 8. Mã ngẫu nhiên không có trong DB: 404.
 9. Viewport điện thoại 320–390px: không tràn ngang; form và CTA sử dụng được.
 10. Keyboard: tab tới input/nút, focus dễ nhìn, thông báo lỗi đọc được.
+11. Bulk: thêm 2 hàng gồm label tùy chọn và URL, tạo đủ 2 link, copy report và tải được file `.txt` với mỗi dòng `label : short-link`.
+12. Bulk lỗi một phần: dòng URL sai hiển thị lỗi, các dòng hợp lệ vẫn có trong report; lỗi insert giữa batch không làm mất các kết quả đã tạo.
 
 ## Load check đề xuất trước khi công khai rộng
 

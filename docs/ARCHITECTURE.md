@@ -6,6 +6,7 @@
 Browser
   ├─ GET /             → Next.js static/SSR landing page
   ├─ POST /api/links   → Node.js function → validate → Supabase INSERT
+  ├─ POST /api/links/bulk → Node.js function → per-item validate/create → partial report
   └─ GET /{code}       → Edge route → Supabase lookup on cache miss → 302
                                              ↓
                                       CDN cache (5 min)
@@ -29,4 +30,4 @@ Chỉ server route được giữ service role. Bảng bật RLS và không có 
 
 ## Rate limit
 
-Rate limiter map trong memory của isolate là best effort. Serverless có nhiều isolate, map có thể mất khi scale/redeploy, và header IP phụ thuộc proxy. Nó chỉ giúp chặn thao tác lặp đơn giản; không được xem là chống bot. Trước khi public rộng, thay bằng dịch vụ rate limit dùng chung hoặc WAF phù hợp.
+Rate limiter map trong memory của isolate là best effort. Serverless có nhiều isolate, map có thể mất khi scale/redeploy, và header IP phụ thuộc proxy. Single create tính 1 lượt; bulk tính theo số item trong request và tối đa 10 item. Nó chỉ giúp chặn thao tác lặp đơn giản; không được xem là chống bot. Trước khi public rộng, thay bằng dịch vụ rate limit dùng chung hoặc WAF phù hợp.

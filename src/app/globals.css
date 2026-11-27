@@ -18,6 +18,9 @@ h1 { margin:22px 0 12px; font-size:clamp(38px,5vw,55px); line-height:1.13; lette
 h1 span { color:var(--accent); }
 .hero-copy { margin:0; color:var(--muted); font-size:16px; line-height:1.7; }
 .shortener-card { width:min(100%,690px); min-height:160px; margin:36px auto 0; padding:23px 24px 20px; text-align:left; background:var(--paper); border:1px solid #e8eaf1; border-radius:15px; box-shadow:0 14px 42px rgb(28 37 65 / 7%); }
+.mode-switch { display:flex; gap:5px; margin-bottom:19px; padding:4px; background:#f2f3f8; border-radius:9px; }
+.mode-tab { flex:1; min-height:34px; color:#7a8497; background:transparent; border:0; border-radius:6px; cursor:pointer; font-size:12px; font-weight:700; }
+.mode-tab.active { color:#5146df; background:#fff; box-shadow:0 2px 7px rgb(28 37 65 / 8%); }
 .input-label { display:block; margin:0 0 9px 2px; color:#354159; font-size:13px; font-weight:700; }
 .input-row { height:52px; display:flex; align-items:center; gap:11px; padding:0 14px; border:1px solid #e1e5ee; border-radius:9px; background:#fcfcfe; transition:border-color .15s,box-shadow .15s; }
 .input-row:focus-within { border-color:#938cf7; box-shadow:0 0 0 3px rgb(98 87 238 / 10%); }
@@ -47,6 +50,23 @@ h1 span { color:var(--accent); }
 .result-url-row { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:8px 8px 8px 14px; background:#f7f7ff; border:1px solid #e8e6ff; border-radius:9px; }
 .result-url-row a { overflow:hidden; color:#554bdd; font-size:15px; font-weight:700; text-overflow:ellipsis; white-space:nowrap; }
 .copy-button { min-height:38px; flex:0 0 auto; font-size:12px; }
+.bulk-rows { display:grid; gap:10px; }
+.bulk-row { display:grid; grid-template-columns:minmax(115px,.7fr) minmax(0,1.8fr) 28px; align-items:end; gap:8px; }
+.bulk-field label { display:block; margin:0 0 6px 2px; color:#68748a; font-size:11px; font-weight:700; }
+.bulk-field input { width:100%; min-width:0; height:44px; padding:0 11px; color:#26324a; background:#fcfcfe; border:1px solid #e1e5ee; border-radius:8px; outline:0; font-size:13px; }
+.bulk-field input:focus { border-color:#938cf7; box-shadow:0 0 0 3px rgb(98 87 238 / 10%); }
+.bulk-field input::placeholder { color:#a2aabd; }
+.remove-row { width:28px; height:28px; display:grid; place-items:center; margin-bottom:8px; padding:0; color:#7b8497; background:#eef0f5; border:0; border-radius:50%; cursor:pointer; font-size:20px; }
+.remove-row:disabled { cursor:not-allowed; opacity:.45; }
+.bulk-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:12px; }
+.add-row { padding:4px 0; color:#554bdd; background:none; border:0; cursor:pointer; font-size:12px; font-weight:700; }
+.add-row:disabled { cursor:not-allowed; opacity:.45; }
+.bulk-result { margin-top:22px; padding-top:19px; border-top:1px solid #eceef4; }
+.bulk-report { overflow:auto; max-height:250px; margin:0; padding:14px; color:#36415a; background:#f7f7ff; border:1px solid #e8e6ff; border-radius:9px; font:13px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace; white-space:pre-wrap; word-break:break-word; }
+.bulk-actions { display:flex; flex-wrap:wrap; gap:9px; margin-top:12px; }
+.bulk-errors ul { margin:5px 0 0 20px; padding:0; color:var(--danger); font-size:12px; line-height:1.5; }
+.download-button { min-height:38px; padding:0 14px; color:#554bdd; background:#fff; border:1px solid #d9d6ff; border-radius:8px; cursor:pointer; font-size:12px; font-weight:700; }
+.download-button:hover { background:#f7f7ff; }
 .make-another { margin:13px 0 0 1px; padding:4px 0; color:#747f94; background:none; border:0; cursor:pointer; font-size:12px; }
 .make-another:hover { color:var(--accent); }
 .how-section { padding:37px 0 76px; }
@@ -74,6 +94,10 @@ h1 span { color:var(--accent); }
  h1 { margin-top:20px; font-size:clamp(36px,10vw,46px); letter-spacing:-1.8px; }
  .hero-copy { max-width:340px; margin:0 auto; font-size:14px; }
  .shortener-card { margin-top:28px; padding:19px 16px 16px; }
+ .bulk-row { grid-template-columns:1fr 28px; }
+ .bulk-label-field { grid-column:1; }
+ .bulk-url-field { grid-column:1; }
+ .remove-row { grid-column:2; grid-row:1 / span 2; margin-bottom:8px; }
  .form-bottom { align-items:stretch; flex-direction:column; }
  .input-help { order:2; }
  .submit-button { width:100%; min-height:46px; }
