@@ -31,7 +31,8 @@ npm run build
 19. Template library: nhiều template được chọn bằng dropdown; import một object hoặc array JSON hợp lệ sẽ thêm template và chọn template đầu tiên vừa import; export tạo được JSON của template hiện tại.
 20. Template modes: mode `Nhập giá trị` mặc định ở cột trái, mode `Template details` chỉnh nội dung ở cùng cột, Preview cố định ở cột phải.
 21. Template actions: Import/Export/Save/Delete/Copy có icon phía trước; action thành công hiển thị text feedback và `Copy text` đổi trạng thái sau khi copy.
-22. Mobile header: ở viewport 320–390px vẫn nhìn thấy badge `INTERNAL TOOLKIT`, menu không che logo và có thể cuộn ngang nếu cần.
+22. Template API CRUD: `GET` list, `POST` create mới, `PUT` update custom template, `DELETE` xóa custom template; duplicate id trả `409`, update/delete id không tồn tại trả `404`, built-in không được update/delete.
+23. Mobile header: ở viewport 320–390px vẫn nhìn thấy badge `INTERNAL TOOLKIT`, menu không che logo và có thể cuộn ngang nếu cần.
 
 ## Load check đề xuất trước khi công khai rộng
 

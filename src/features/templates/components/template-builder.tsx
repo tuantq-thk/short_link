@@ -228,7 +228,7 @@ export function TemplateBuilder() {
     try {
       if (TEMPLATE_STORAGE_MODE === 'supabase') {
         const response = await fetch('/api/templates', {
-          method: 'POST',
+          method: selectedId === 'new' || current?.builtIn ? 'POST' : 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(nextTemplate),
         });

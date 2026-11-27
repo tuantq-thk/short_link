@@ -88,19 +88,20 @@ export async function POST(request: Request) {
   try {
     const { data, error } = await getSupabaseAdmin()
       .from('templates')
-      .upsert(
-        {
-          id: parsed.data.id,
-          name: parsed.data.name,
-          description: parsed.data.description,
-          content: parsed.data.content,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'id' },
-      )
+      .insert({
+        id: parsed.data.id,
+        name: parsed.data.name,
+        description: parsed.data.description,
+        content: parsed.data.content,
+        built_in: false,
+      })
       .select('id, name, description, content, built_in')
       .single();
-    if (error) throw error;
+    if (error) {
+      if (error.code === '23505')
+        return NextResponse.json({ error: 'Template id đã tồn tại.' }, { status: 409 });
+      throw error;
+    }
     return NextResponse.json(
       { template: mapTemplate(data) },
       { status: 201, headers: { 'Cache-Control': 'no-store' } },
@@ -111,6 +112,50 @@ export async function POST(request: Request) {
   }
 }
 
+export async function PUT(request: Request) {
+  if (!storageIsSupabase()) return storageModeError();
+  let payload: unknown;
+  try {
+    payload = await request.json();
+  } catch {
+    return NextResponse.json({ error: 'Dữ liệu template chưa đúng định dạng.' }, { status: 400 });
+  }
+  const parsed = templateSchema.safeParse(payload);
+  if (!parsed.success)
+    return NextResponse.json(
+      { error: 'Template cần có id, tên và nội dung hợp lệ.' },
+      { status: 400 },
+    );
+
+  try {
+    const { data, error } = await getSupabaseAdmin()
+      .from('templates')
+      .update({
+        name: parsed.data.name,
+        description: parsed.data.description,
+        content: parsed.data.content,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', parsed.data.id)
+      .eq('built_in', false)
+      .select('id, name, description, content, built_in')
+      .maybeSingle();
+    if (error) throw error;
+    if (!data)
+      return NextResponse.json({ error: 'Không tìm thấy template để cập nhật.' }, { status: 404 });
+    return NextResponse.json(
+      { template: mapTemplate(data) },
+      { headers: { 'Cache-Control': 'no-store' } },
+    );
+  } catch (error) {
+    console.error('template_update_failed', error instanceof Error ? error.message : 'unknown');
+    return NextResponse.json(
+      { error: 'Không cập nhật được template trong Supabase.' },
+      { status: 503 },
+    );
+  }
+}
+
 export async function DELETE(request: Request) {
   if (!storageIsSupabase()) return storageModeError();
   const id = new URL(request.url).searchParams.get('id');
@@ -118,12 +163,16 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: 'Template id không hợp lệ.' }, { status: 400 });
 
   try {
-    const { error } = await getSupabaseAdmin()
+    const { data, error } = await getSupabaseAdmin()
       .from('templates')
       .delete()
       .eq('id', id)
-      .eq('built_in', false);
+      .eq('built_in', false)
+      .select('id')
+      .maybeSingle();
     if (error) throw error;
+    if (!data)
+      return NextResponse.json({ error: 'Không tìm thấy template để xóa.' }, { status: 404 });
     return new Response(null, { status: 204 });
   } catch (error) {
     console.error('template_delete_failed', error instanceof Error ? error.message : 'unknown');

@@ -21,3 +21,4 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Cố định app shell theo viewport, giữ state các tool đã mở và chỉ scroll/chuyển động trong vùng content khi đổi tab.
 - Template Builder dùng mode `Nhập giá trị` mặc định, thêm mode `Template details`, import JSON và feedback thành công có icon/text cho các action.
 - Thêm 5 Chatwork built-in templates cố định theo tình huống: daily progress, task completed, review request, blocker/support và multiple PRs.
+- Tách Template API thành CRUD contract rõ ràng cho custom templates, giữ built-in templates bất biến.

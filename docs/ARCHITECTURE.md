@@ -18,6 +18,8 @@ Link tool giữ hai flow single/bulk. Template Builder có hai adapter lưu tr�
 
 Mã giao diện được tổ chức theo feature: `workspace`, `links` và `templates` có module riêng cho implementation, logic và CSS. `globals.css` chỉ chứa design tokens, reset và accessibility baseline. Workspace dùng dynamic import để không tải implementation/CSS của Link tools và Templates trong initial route chunk; các feature được nạp khi người dùng mở tool tương ứng.
 
+Template API có CRUD rõ ràng: `GET /api/templates` đọc built-in từ source và custom từ storage; `POST` tạo custom template; `PUT` cập nhật custom template; `DELETE` xóa custom template. Built-in templates là source-owned và không thể sửa/xóa qua API.
+
 Workspace dùng app shell cao bằng `100dvh`: header và footer là các vùng flex cố định, còn `main` là vùng scroll độc lập. Các tool đã mở được giữ mounted và ẩn/hiện bằng panel để giữ form state, tránh fetch/render lại khi đổi tab; scroll của vùng content được reset về đầu mỗi lần chuyển tool.
 ```
 
