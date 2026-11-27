@@ -17,4 +17,5 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Chuyển landing page thành internal tools workspace, thêm Template Builder với Chatwork Task Report mặc định và custom templates lưu local.
 - Thêm template storage mode `local`/`supabase`, migration `public.templates` và server CRUD API cho template dùng chung.
 - Tái cấu trúc source theo feature, tách CSS Module cho từng tool và lazy-load Link tools/Templates để giảm initial route bundle.
+- Cố định app shell theo viewport, giữ state các tool đã mở và chỉ scroll/chuyển động trong vùng content khi đổi tab.
 

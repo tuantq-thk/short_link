@@ -1,5 +1,5 @@
-.toolsShell { width: min(100% - 48px, 1240px); min-height: 100vh; display: flex; flex-direction: column; margin: 0 auto; }
-.toolsHeader { height: 82px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 34px; border-bottom: 1px solid #e8ebf1; }
+.toolsShell { width: min(100% - 48px, 1240px); height: 100vh; height: 100dvh; min-height: 100vh; min-height: 100dvh; display: flex; flex-direction: column; margin: 0 auto; overflow: hidden; }
+.toolsHeader { height: 82px; flex: 0 0 82px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 34px; border-bottom: 1px solid #e8ebf1; }
 .brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-size: 20px; font-weight: 800; letter-spacing: -.7px; }
 .brandMark { width: 31px; height: 31px; display: inline-grid; place-items: center; border-radius: 10px; color: #fff; background: var(--accent); font-size: 20px; font-weight: 800; line-height: 1; }
 .brandLight { color: var(--accent); }
@@ -15,8 +15,11 @@
 .toolNavIcon { width: 25px; height: 25px; display: grid; flex: 0 0 25px; place-items: center; color: var(--accent); background: #fff; border-radius: 7px; font-size: 16px; font-weight: 700; }
 .internalBadge { display: inline-flex; align-items: center; gap: 7px; padding: 8px 11px; color: #5146df; background: #eeedff; border: 1px solid #d9d6ff; border-radius: 7px; box-shadow: 0 3px 10px rgb(81 70 223 / 8%); font-size: 10px; font-weight: 850; letter-spacing: 1.1px; white-space: nowrap; }
 .internalDot { width: 7px; height: 7px; display: inline-block; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 3px #d8d5ff; }
-.toolsLayout { flex: 1; display: block; padding: 42px 0 64px; }
+.toolsLayout { flex: 1 1 auto; min-height: 0; display: block; overflow-y: auto; overscroll-behavior: contain; padding: 42px 0 64px; scrollbar-width: none; }
+.toolsLayout::-webkit-scrollbar { display: none; }
 .toolMain { min-width: 0; }
+.toolPanel { animation: panel-enter .18s ease-out; }
+@keyframes panel-enter { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 .toolHeading { max-width: 720px; margin: 4px auto 0; text-align: center; }
 .toolHeading h1 { margin: 16px 0 10px; font-size: clamp(32px, 4vw, 48px); letter-spacing: -2px; line-height: 1.13; }
 .toolHeading p { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
@@ -43,13 +46,13 @@
 .comingSoon .catalogCardCopy { padding-top: 0; }
 .comingLabel { margin-left: auto; color: #a0a8b7; font-size: 9px; font-weight: 800; letter-spacing: 1px; }
 .catalogFootnote { margin: 25px 0 0; color: #a0a8b7; font-size: 11px; text-align: center; }
-.toolsFooter { display: flex; align-items: center; justify-content: space-between; min-height: 64px; margin-top: auto; padding: 0 2px; color: #929bad; border-top: 1px solid #e8ebf1; font-size: 11px; }
+.toolsFooter { display: flex; align-items: center; justify-content: space-between; min-height: 64px; flex: 0 0 64px; margin-top: auto; padding: 0 2px; color: #929bad; border-top: 1px solid #e8ebf1; font-size: 11px; }
 .toolsFooter a { color: var(--accent); font-weight: 750; text-decoration: none; }
 .toolsFooter a:hover { text-decoration: underline; }
 
 @media (max-width: 640px) {
   .toolsShell { width: min(100% - 32px, 520px); }
-  .toolsHeader { height: auto; min-height: 68px; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 48px 28px; gap: 4px 13px; padding: 7px 0; }
+  .toolsHeader { height: auto; min-height: 68px; flex-basis: 68px; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: 48px 28px; gap: 4px 13px; padding: 7px 0; }
   .internalBadge { grid-column: 1 / -1; grid-row: 2; justify-self: end; padding: 4px 7px; gap: 5px; font-size: 8px; letter-spacing: .8px; }
   .internalDot { width: 5px; height: 5px; box-shadow: 0 0 0 2px #d8d5ff; }
   .toolsLayout { padding: 24px 0 42px; }
@@ -67,5 +70,5 @@
   .catalogGrid { grid-template-columns: 1fr; }
   .comingSoon { grid-column: auto; }
   .comingLabel { font-size: 8px; }
-  .toolsFooter { align-items: flex-start; flex-direction: column; justify-content: center; gap: 5px; min-height: 72px; }
+  .toolsFooter { align-items: flex-start; flex-direction: column; justify-content: center; gap: 5px; min-height: 72px; flex-basis: 72px; }
 }

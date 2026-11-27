@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import styles from '../styles/workspace.module.css';
@@ -16,21 +16,34 @@ type Tool = 'home' | 'links' | 'templates';
 
 export function ToolsWorkspace() {
   const [tool, setTool] = useState<Tool>('home');
+  const [visitedTools, setVisitedTools] = useState<Set<Tool>>(() => new Set(['home']));
+  const mainRef = useRef<HTMLElement>(null);
+
+  function openTool(nextTool: Tool) {
+    setTool(nextTool);
+    setVisitedTools((current) => new Set(current).add(nextTool));
+  }
+
+  useEffect(() => {
+    mainRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+  }, [tool]);
 
   return (
     <div className={styles.toolsShell}>
       <header className={styles.toolsHeader}>
-        <Link className={styles.brand} href="/" aria-label="TeamKit, về trang chủ" onClick={() => setTool('home')}><span className={styles.brandMark} aria-hidden="true">T</span><span>Team<span className={styles.brandLight}>Kit</span></span></Link>
+        <Link className={styles.brand} href="/" aria-label="TeamKit, về trang chủ" onClick={() => openTool('home')}><span className={styles.brandMark} aria-hidden="true">T</span><span>Team<span className={styles.brandLight}>Kit</span></span></Link>
         <nav className={styles.toolsNav} aria-label="Workspace tools">
-          <button className={`${styles.toolNavItem} ${tool === 'home' ? styles.active : ''}`} type="button" aria-current={tool === 'home' ? 'page' : undefined} onClick={() => setTool('home')}><span className={styles.toolNavIcon} aria-hidden="true">⌂</span><span><strong>Tools</strong><small>All tools</small></span></button>
-          <button className={`${styles.toolNavItem} ${tool === 'links' ? styles.active : ''}`} type="button" aria-current={tool === 'links' ? 'page' : undefined} onClick={() => setTool('links')}><span className={styles.toolNavIcon} aria-hidden="true">↗</span><span><strong>Link tools</strong><small>Single & bulk</small></span></button>
-          <button className={`${styles.toolNavItem} ${tool === 'templates' ? styles.active : ''}`} type="button" aria-current={tool === 'templates' ? 'page' : undefined} onClick={() => setTool('templates')}><span className={styles.toolNavIcon} aria-hidden="true">▤</span><span><strong>Templates</strong><small>Chatwork & text</small></span></button>
+          <button className={`${styles.toolNavItem} ${tool === 'home' ? styles.active : ''}`} type="button" aria-current={tool === 'home' ? 'page' : undefined} onClick={() => openTool('home')}><span className={styles.toolNavIcon} aria-hidden="true">⌂</span><span><strong>Tools</strong><small>All tools</small></span></button>
+          <button className={`${styles.toolNavItem} ${tool === 'links' ? styles.active : ''}`} type="button" aria-current={tool === 'links' ? 'page' : undefined} onClick={() => openTool('links')}><span className={styles.toolNavIcon} aria-hidden="true">↗</span><span><strong>Link tools</strong><small>Single & bulk</small></span></button>
+          <button className={`${styles.toolNavItem} ${tool === 'templates' ? styles.active : ''}`} type="button" aria-current={tool === 'templates' ? 'page' : undefined} onClick={() => openTool('templates')}><span className={styles.toolNavIcon} aria-hidden="true">▤</span><span><strong>Templates</strong><small>Chatwork & text</small></span></button>
         </nav>
         <span className={styles.internalBadge}><span className={styles.internalDot} aria-hidden="true" />INTERNAL TOOLKIT</span>
       </header>
-      <main className={styles.toolsLayout}>
+      <main className={styles.toolsLayout} ref={mainRef}>
         <section className={styles.toolMain}>
-          {tool === 'home' ? <ToolCatalog onOpenTool={setTool} /> : tool === 'links' ? <><div className={styles.toolHeading}><span className={styles.toolKicker}>LINK TOOL</span><h1>Rút gọn và chia sẻ nhanh.</h1><p>Tạo một link, nhiều link hoặc report có thể gửi ngay cho team.</p></div><LinkShortener /></> : <TemplateBuilder />}
+          {visitedTools.has('home') && <div className={styles.toolPanel} hidden={tool !== 'home'} aria-hidden={tool !== 'home'}><ToolCatalog onOpenTool={openTool} /></div>}
+          {visitedTools.has('links') && <div className={styles.toolPanel} hidden={tool !== 'links'} aria-hidden={tool !== 'links'}><div className={styles.toolHeading}><span className={styles.toolKicker}>LINK TOOL</span><h1>Rút gọn và chia sẻ nhanh.</h1><p>Tạo một link, nhiều link hoặc report có thể gửi ngay cho team.</p></div><LinkShortener /></div>}
+          {visitedTools.has('templates') && <div className={styles.toolPanel} hidden={tool !== 'templates'} aria-hidden={tool !== 'templates'}><TemplateBuilder /></div>}
         </section>
       </main>
       <footer className={styles.toolsFooter}><span>Built for internal workflows</span><span>Author: <a href="https://github.com/tqt97" target="_blank" rel="noreferrer">TuanTQ <span aria-hidden="true">↗</span></a></span></footer>
