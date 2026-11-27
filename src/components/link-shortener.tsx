@@ -129,7 +129,7 @@ export function LinkShortener() {
     const objectUrl = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = objectUrl;
-    anchor.download = 'link-gon-report.txt';
+    anchor.download = 'teamkit-links.txt';
     anchor.click();
     URL.revokeObjectURL(objectUrl);
   }

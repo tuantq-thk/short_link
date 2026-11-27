@@ -14,4 +14,5 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Migration Supabase với RLS bật, không cấp quyền truy cập bảng trực tiếp cho client.
 - README và tài liệu kiến trúc, deploy, chất lượng, capacity, security, roadmap.
 - GitHub Actions CI/CD kiểm tra TypeScript, ESLint, production build và tự động deploy Vercel khi push vào `main` hoặc `master`.
+- Chuyển landing page thành internal tools workspace, thêm Template Builder với Chatwork Task Report mặc định và custom templates lưu local.
 

@@ -11,6 +11,7 @@ Dịch vụ này được thiết kế để chuyển hướng public tới URL 
 ## Secrets và database
 
 - Service role chỉ được đọc trong server-only module.
+- Template definitions được lưu trong `localStorage` của trình duyệt; giá trị report chỉ nằm trong React state của phiên hiện tại và không gửi lên server. Không lưu secret, token hoặc dữ liệu nhạy cảm trong template/value.
 - RLS bật và revoke bảng khỏi `anon`/`authenticated`.
 - Không log destination URL hoặc IP.
 - Bảo vệ Vercel/Supabase dashboards bằng MFA; rotate key nếu từng lộ.

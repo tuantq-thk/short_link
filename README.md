@@ -1,6 +1,6 @@
-# Link Gọn
+# TeamKit
 
-Dịch vụ rút gọn đường dẫn public, không cần tài khoản. Dán URL, tạo mã ngắn, sao chép và chia sẻ.
+Bộ công cụ nội bộ cho team: root hiển thị danh mục tools, từ đó mở rút gọn link, tạo report nhiều link hoặc sinh text từ template để copy gửi vào group.
 
 ## Tính năng MVP
 
@@ -8,8 +8,9 @@ Dịch vụ rút gọn đường dẫn public, không cần tài khoản. Dán U
 - Tạo mã ngẫu nhiên 7 ký tự, tránh các ký tự dễ nhầm lẫn.
 - Redirect HTTP 302 đến URL đích; cache redirect ở CDN tối đa 5 phút.
 - Sao chép link bằng một chạm, tạo link tiếp theo, thông báo lỗi tiếng Việt.
-- Nhập tối đa 10 hàng gồm label tùy chọn và URL, tạo nhiều short link một lần và copy/tải report `.txt` dạng `label : link rút gọn`.
-- Responsive, accessible, landing page server-rendered; chỉ form dùng JavaScript phía client.
+- Nhập tối đa 10 hàng gồm label tùy chọn và URL, tạo nhiều short link một lần và copy/tải report `teamkit-links.txt` dạng `label : link rút gọn`.
+- Tạo, sửa, xóa nhiều template nội bộ; template Chatwork Task Report có sẵn và hỗ trợ placeholder `{{ten_bien}}`.
+- Responsive, accessible, root client workspace với tool catalog; link/redirect vẫn chạy qua server routes.
 - Không đăng nhập, không analytics click, không lưu IP.
 - Rate limit tạo link best-effort theo IP: 10 lần/phút trên mỗi Vercel function isolate.
 
@@ -26,11 +27,14 @@ src/
   app/
     [code]/route.ts       # Edge redirect handler
     api/links/route.ts    # Tạo link, validate và rate limit
+    icon.svg              # TeamKit favicon/logo mark
     globals.css           # CSS responsive, không thêm UI framework
     layout.tsx            # Metadata và root layout
-    page.tsx              # Trang landing server-rendered
+    page.tsx              # Root tool catalog
   components/
     link-shortener.tsx    # Form single/bulk và copy/tải report
+    template-builder.tsx  # Template CRUD, values và preview
+    tools-workspace.tsx   # Header menu, catalog và tool switching
   lib/
     code.ts               # Sinh mã ngắn
     constants.ts          # Giới hạn dùng chung
@@ -38,6 +42,7 @@ src/
     rate-limit.ts         # Throttle best-effort
     short-link.ts         # Tạo mã và link dùng chung cho single/bulk
     supabase/admin.ts     # Supabase server-only client
+    template-utils.ts     # Template defaults, placeholder và renderer
     url.ts                # Chuẩn hóa/kiểm tra URL
 supabase/migrations/      # Schema SQL
  docs/                    # Tài liệu thiết kế, deploy, bảo mật, vận hành
@@ -71,7 +76,11 @@ Label: Trang chủ       Link: https://example.com
 Label: (để trống)      Link: https://example.com/docs
 ```
 
-Sau khi tạo, có thể copy toàn bộ report hoặc tải file `link-gon-report.txt` để gửi cho người khác. Label chỉ phục vụ report và không được lưu vào bảng `links`.
+Sau khi tạo, có thể copy toàn bộ report hoặc tải file `teamkit-links.txt` để gửi cho người khác. Label chỉ phục vụ report và không được lưu vào bảng `links`.
+
+### Template trả lời
+
+Mở công cụ **Template trả lời**, chọn template Chatwork mặc định hoặc bấm **Tạo mới**. Trong nội dung template, dùng placeholder dạng `{{task}}`, `{{spec}}`, `{{pull_request}}`; các placeholder sẽ tự sinh thành ô nhập giá trị. Sau khi điền, copy phần preview để gửi vào group. Template definitions được lưu trong `localStorage` của trình duyệt hiện tại, chưa đồng bộ giữa các thành viên. Giá trị nhập cho lần report hiện tại chỉ nằm trong React state và sẽ mất khi reload; không lưu secret hoặc dữ liệu nhạy cảm.
 
 ## Deploy miễn phí ban đầu
 
@@ -81,7 +90,7 @@ Sau khi tạo, có thể copy toàn bộ report hoặc tải file `link-gon-repo
 4. Thêm Environment Variables cho Production (và Preview nếu cần):
    - `SUPABASE_URL`: Project URL.
    - `SUPABASE_SERVICE_ROLE_KEY`: service role secret; tuyệt đối không đặt tiền tố `NEXT_PUBLIC_`.
-   - `NEXT_PUBLIC_APP_URL`: URL canonical, ví dụ `https://link-gon.vercel.app`.
+   - `NEXT_PUBLIC_APP_URL`: URL canonical, ví dụ `https://teamkit.vercel.app`.
 5. Deploy. Smoke check trang chủ, tạo link, mở redirect, mã sai và URL sai.
 
 Đọc [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) để biết từng bước, cấu hình GitHub Actions và kiểm tra sau deploy.

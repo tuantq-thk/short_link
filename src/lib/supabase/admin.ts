@@ -9,7 +9,7 @@ export function getSupabaseAdmin() {
   if (!url || !key) throw new Error('Supabase server environment is not configured.');
   client ??= createClient(url, key, {
     auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false },
-    global: { headers: { 'x-application-name': 'link-gon' } },
+    global: { headers: { 'x-application-name': 'teamkit' } },
   });
   return client;
 }

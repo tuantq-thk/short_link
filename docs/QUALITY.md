@@ -22,6 +22,11 @@ npm run build
 10. Keyboard: tab tới input/nút, focus dễ nhìn, thông báo lỗi đọc được.
 11. Bulk: thêm 2 hàng gồm label tùy chọn và URL, tạo đủ 2 link, copy report và tải được file `.txt` với mỗi dòng `label : short-link`.
 12. Bulk lỗi một phần: dòng URL sai hiển thị lỗi, các dòng hợp lệ vẫn có trong report; lỗi insert giữa batch không làm mất các kết quả đã tạo.
+13. Template: chọn Chatwork Task Report, điền các placeholder, preview giữ đúng `[info][title]...[/title]...[/info]`, copy ra text đúng nội dung.
+14. Template CRUD: tạo template mới bằng `{{placeholder}}`, lưu, chọn lại, sửa, xóa; reload trang vẫn giữ template custom trong cùng trình duyệt.
+15. Template security: giá trị chứa `[info]`, HTML hoặc ký tự đặc biệt chỉ xuất hiện như text preview, không được render thành HTML.
+16. Template switching: nhập giá trị ở template A, chuyển sang template B có placeholder trùng tên; B không được tự kế thừa giá trị của A.
+17. Mobile header: ở viewport 320–390px vẫn nhìn thấy badge `INTERNAL TOOLKIT`, menu không che logo và có thể cuộn ngang nếu cần.
 
 ## Load check đề xuất trước khi công khai rộng
 

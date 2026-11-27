@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Link Gọn — Rút gọn đường dẫn nhanh',
-  description: 'Tạo link ngắn miễn phí, nhanh chóng và tiện lợi.',
-  applicationName: 'Link Gọn',
+  title: 'TeamKit — Internal tools cho team',
+  description: 'Bộ công cụ nội bộ cho link, template và report.',
+  applicationName: 'TeamKit',
   robots: { index: true, follow: true },
 };
 
