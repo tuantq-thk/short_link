@@ -28,13 +28,21 @@ src/
     [code]/route.ts       # Edge redirect handler
     api/links/route.ts    # Tạo link, validate và rate limit
     icon.svg              # TeamKit favicon/logo mark
-    globals.css           # CSS responsive, không thêm UI framework
+    globals.css           # tokens và reset nền tảng dùng chung
     layout.tsx            # Metadata và root layout
     page.tsx              # Root tool catalog
-  components/
-    link-shortener.tsx    # Form single/bulk và copy/tải report
-    template-builder.tsx  # Template CRUD, values và preview
-    tools-workspace.tsx   # Header menu, catalog và tool switching
+  features/
+    workspace/
+      components/tools-workspace.tsx  # Catalog, header menu và tool switching
+      styles/workspace.module.css      # Layout/catalog/header/footer
+    links/
+      components/link-shortener.tsx   # Form single/bulk và copy/tải report
+      styles/link-shortener.module.css # CSS chỉ tải cùng Link tools
+    templates/
+      components/template-builder.tsx # Template CRUD, values và preview
+      lib/template-utils.ts           # Placeholder và renderer
+      lib/template-config.ts          # Chọn local/Supabase storage
+      styles/template-builder.module.css # CSS chỉ tải cùng Templates
   lib/
     code.ts               # Sinh mã ngắn
     constants.ts          # Giới hạn dùng chung
@@ -42,7 +50,6 @@ src/
     rate-limit.ts         # Throttle best-effort
     short-link.ts         # Tạo mã và link dùng chung cho single/bulk
     supabase/admin.ts     # Supabase server-only client
-    template-utils.ts     # Template defaults, placeholder và renderer
     url.ts                # Chuẩn hóa/kiểm tra URL
 supabase/migrations/      # Schema SQL
  docs/                    # Tài liệu thiết kế, deploy, bảo mật, vận hành

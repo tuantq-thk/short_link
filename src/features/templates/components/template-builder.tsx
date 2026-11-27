@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import styles from '../styles/template-builder.module.css';
 import {
   DEFAULT_TEMPLATES,
   extractTemplateVariables,
@@ -9,8 +10,8 @@ import {
   renderTemplate,
   TEMPLATE_STORAGE_KEY,
   type ToolTemplate,
-} from '@/lib/template-utils';
-import { TEMPLATE_STORAGE_MODE } from '@/lib/template-config';
+} from '@/features/templates/lib/template-utils';
+import { TEMPLATE_STORAGE_MODE } from '@/features/templates/lib/template-config';
 
 function initialValues(content: string): Record<string, string> {
   return Object.fromEntries(extractTemplateVariables(content).map((variable) => [variable, '']));
@@ -181,7 +182,7 @@ export function TemplateBuilder() {
   const selected = templates.find((item) => item.id === selectedId);
 
   return (
-    <div className="template-builder">
+    <div className={`template-builder ${styles.featureRoot}`}>
       <div className="template-topline"><div className="tool-heading compact-heading"><span className="tool-kicker">TEMPLATE BUILDER</span><h1>Tạo text để copy và gửi</h1><p>Dùng placeholder dạng <code>{'{{ten_bien}}'}</code>; {TEMPLATE_STORAGE_MODE === 'supabase' ? 'template dùng chung qua Supabase.' : 'template lưu riêng trên trình duyệt.'}</p></div><button className="secondary-button new-template-button" type="button" onClick={createTemplate}>+ Tạo template</button></div>
       <div className="template-library">
         <div className="template-library-heading"><span>Template library</span><small>{templates.length} template</small></div>

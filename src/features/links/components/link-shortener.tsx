@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useRef, useState } from 'react';
+import styles from '../styles/link-shortener.module.css';
 
 type CreatedLink = { code: string; shortUrl: string };
 type BulkResult = { label: string; shortUrl?: string; error?: string };
@@ -165,7 +166,7 @@ export function LinkShortener() {
   }
 
   return (
-    <div className="shortener-card">
+    <div className={`shortener-card ${styles.featureRoot}`}>
       <div className="mode-switch" role="tablist" aria-label="Kiểu rút gọn link">
         <button className={mode === 'single' ? 'mode-tab active' : 'mode-tab'} type="button" role="tab" aria-selected={mode === 'single'} onClick={() => switchMode('single')}>Một link</button>
         <button className={mode === 'bulk' ? 'mode-tab active' : 'mode-tab'} type="button" role="tab" aria-selected={mode === 'bulk'} onClick={() => switchMode('bulk')}>Nhiều link</button>

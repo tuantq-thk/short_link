@@ -13,7 +13,8 @@ Các thay đổi đáng chú ý của dự án được ghi tại đây.
 - Nút sao chép một chạm, tạo link khác, trạng thái loading và accessibility cơ bản.
 - Migration Supabase với RLS bật, không cấp quyền truy cập bảng trực tiếp cho client.
 - README và tài liệu kiến trúc, deploy, chất lượng, capacity, security, roadmap.
-- GitHub Actions CI/CD kiểm tra TypeScript, ESLint, production build và tự động deploy Vercel khi push vào `main` hoặc `master`.
+- GitHub Actions CI kiểm tra TypeScript, ESLint và production build; Vercel Git Integration chịu trách nhiệm deploy khi push/PR.
 - Chuyển landing page thành internal tools workspace, thêm Template Builder với Chatwork Task Report mặc định và custom templates lưu local.
 - Thêm template storage mode `local`/`supabase`, migration `public.templates` và server CRUD API cho template dùng chung.
+- Tái cấu trúc source theo feature, tách CSS Module cho từng tool và lazy-load Link tools/Templates để giảm initial route bundle.
 
